@@ -262,7 +262,7 @@ public:
             {
                 if (CVersion.isEmpty() || CVersion > String(CurrentVersion) ||
                     (DowngradesAllowed && CVersion != String(CurrentVersion))) {
-                    return Action == DONT_DO_UPDATE ? UPDATE_AVAILABLE : DoOTAUpdate(config["URL"], Action, api_key);
+                    return Action == DONT_DO_UPDATE ? UPDATE_AVAILABLE : DoOTAUpdate(config["URL"], Action, mac, secret);
                 }
                 foundProfile = true;
             }
