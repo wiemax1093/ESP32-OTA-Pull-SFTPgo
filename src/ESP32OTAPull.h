@@ -49,12 +49,14 @@ private:
     bool DowngradesAllowed = false;
     bool SerialDebug = false;
 
-    int DoOTAUpdate(const char* URL, ActionType Action, const char* api_key)
+    int DoOTAUpdate(const char* URL, ActionType Action, const char* mac, const char* secret)
     {
         HTTPClient http;
 	http.useHTTP10(true);		
         http.begin(URL);
-        http.addHeader("X-SFTPGO-API-KEY", api_key);
+        // http.addHeader("X-SFTPGO-API-KEY", api_key);
+        http.addHeader("X-Device-Key", secret);
+        http.addHeader("X-Device-ID", mac);
     	http.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS); //Forces redirect following, enables OTA updates from more online sources, like GitHub releases.
 
         // Send HTTP GET request
@@ -182,7 +184,7 @@ public:
     /// @param CurrentVersion The version # of the current (i.e. to be replaced) sketch
     /// @param ActionType The action to be performed.  May be any of DONT_DO_UPDATE, UPDATE_BUT_NO_BOOT, UPDATE_AND_BOOT (default)
     /// @return ErrorCode or HTTP failure code (see enum above)
-    int CheckForOTAUpdate(const char* JSON_URL, const char *CurrentVersion, const char* api_key, ActionType Action = UPDATE_AND_BOOT)
+    int CheckForOTAUpdate(const char* JSON_URL, const char *CurrentVersion, const char* mac, const char* secret, ActionType Action = UPDATE_AND_BOOT)
     {
         CurrentVersion = CurrentVersion == NULL ? "" : CurrentVersion;
 
@@ -191,7 +193,9 @@ public:
 		
 		// Send request
 		http.begin(JSON_URL);
-        http.addHeader("X-SFTPGO-API-KEY", api_key);
+        // http.addHeader("X-SFTPGO-API-KEY", api_key);
+        http.addHeader("X-Device-Key", secret);
+        http.addHeader("X-Device-ID", mac);
 	    http.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS); //Forces redirect following, enables OTA updates from more online sources, like GitHub releases.
 		
         // Send HTTP GET request
